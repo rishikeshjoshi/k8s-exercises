@@ -1,23 +1,11 @@
-# K8s exercises
+# Deploy nginx to local cluster and expose it using ingress
 
-The examples use the local k3d kubernetes cluster.
+1. Apply the workload to the created kubernetes cluster
 
-## Useful links:
-- [Install k3d](https://k3d.io/v4.4.8/#installation)
+        kubectl apply -f 01-simple-nginx
 
+2. Open `http://localhost:8081` to verify that nginx is up and running
 
-## Deploy nginx to local cluster and expose it using ingress
+3. Clean up
 
-1. Create a cluster with k3s
-
-        # Create a k3d cluster and expose port 80 on the loadbalancer node to 8081 on the host
-        k3d cluster create website-cluster -p "8081:80@loadbalancer"
-
-2. Deploy the workload
-
-        # Deploy to above cluster
-        cd nginx
-        kubectl apply -f workload
-
-3. Open http://localhost:8081/ on the host and verify that nginx is up and running
-
+        kubectl delete -f 01-simple-nginx

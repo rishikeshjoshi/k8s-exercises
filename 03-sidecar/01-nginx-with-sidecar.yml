@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  nginx
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: nginx
+        volumeMounts:
+        - name: content
+          mountPath: /usr/share/nginx/html
+      - name:  content-updater
+        image: alpine:latest
+        volumeMounts:
+        - name: content
+          mountPath: /content
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo `date` > /content/index.html; sleep 10;done"]
+      volumes:
+        - name: content
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+  - name: nginx
+    protocol: TCP
+    port: 80
+    targetPort: 80
